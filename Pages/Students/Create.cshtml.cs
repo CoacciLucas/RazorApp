@@ -1,45 +1,38 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using RazorApp.Data;
-using RazorApp.Models;
 
-namespace RazorApp.Pages_Students
+namespace RazorApp.Pages.Students;
+
+public class CreateModel : PageModel
 {
-    public class CreateModel : PageModel
+    private readonly Data.ApplicationDbContext _context;
+
+    public CreateModel(Data.ApplicationDbContext context)
     {
-        private readonly RazorApp.Data.ApplicationDbContext _context;
+        _context = context;
+    }
 
-        public CreateModel(RazorApp.Data.ApplicationDbContext context)
-        {
-            _context = context;
-        }
+    public IActionResult OnGet()
+    {
+        return Page();
+    }
 
-        public IActionResult OnGet()
+    [BindProperty]
+    public Student Student { get; set; } = default!;
+
+
+    // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+    public async Task<IActionResult> OnPostAsync()
+    {
+        if (!ModelState.IsValid || _context.Students == null || Student == null)
         {
             return Page();
         }
 
-        [BindProperty]
-        public Student Student { get; set; } = default!;
-        
+        _context.Students.Add(Student);
+        await _context.SaveChangesAsync();
 
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
-        public async Task<IActionResult> OnPostAsync()
-        {
-          if (!ModelState.IsValid || _context.Students == null || Student == null)
-            {
-                return Page();
-            }
-
-            _context.Students.Add(Student);
-            await _context.SaveChangesAsync();
-
-            return RedirectToPage("./Index");
-        }
+        return RedirectToPage("./Index");
     }
 }

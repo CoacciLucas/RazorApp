@@ -1,43 +1,37 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using RazorApp.Data;
-using RazorApp.Models;
 
-namespace RazorApp.Pages_Premiums
+namespace RazorApp.Pages.Premiums;
+
+public class DetailsModel : PageModel
 {
-    public class DetailsModel : PageModel
+    private readonly Data.ApplicationDbContext _context;
+
+    public DetailsModel(Data.ApplicationDbContext context)
     {
-        private readonly RazorApp.Data.ApplicationDbContext _context;
+        _context = context;
+    }
 
-        public DetailsModel(RazorApp.Data.ApplicationDbContext context)
+    public Premium Premium { get; set; } = default!;
+
+    public async Task<IActionResult> OnGetAsync(int? id)
+    {
+        if (id == null || _context.Premiums == null)
         {
-            _context = context;
+            return NotFound();
         }
 
-      public Premium Premium { get; set; } = default!; 
-
-        public async Task<IActionResult> OnGetAsync(int? id)
+        var premium = await _context.Premiums.FirstOrDefaultAsync(m => m.Id == id);
+        if (premium == null)
         {
-            if (id == null || _context.Premiums == null)
-            {
-                return NotFound();
-            }
-
-            var premium = await _context.Premiums.FirstOrDefaultAsync(m => m.Id == id);
-            if (premium == null)
-            {
-                return NotFound();
-            }
-            else 
-            {
-                Premium = premium;
-            }
-            return Page();
+            return NotFound();
         }
+        else
+        {
+            Premium = premium;
+        }
+        return Page();
     }
 }

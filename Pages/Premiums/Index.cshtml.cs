@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using RazorApp.Data;
-using RazorApp.Models;
 
 namespace RazorApp.Pages_Premiums
 {
@@ -19,7 +13,7 @@ namespace RazorApp.Pages_Premiums
             _context = context;
         }
 
-        public IList<Premium> Premium { get;set; } = default!;
+        public IList<Premium> Premium { get; set; } = default!;
 
         public async Task OnGetAsync()
         {

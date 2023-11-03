@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace RazorApp.Models;
-
+namespace Domain.Entities;
 public class Premium
 {
     [Key]

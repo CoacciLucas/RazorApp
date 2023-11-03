@@ -1,32 +1,25 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using RazorApp.Data;
-using RazorApp.Models;
 
-namespace RazorApp.Pages_Students
+namespace RazorApp.Pages.Students;
+
+public class IndexModel : PageModel
 {
-    public class IndexModel : PageModel
+    private readonly Data.ApplicationDbContext _context;
+
+    public IndexModel(Data.ApplicationDbContext context)
     {
-        private readonly RazorApp.Data.ApplicationDbContext _context;
+        _context = context;
+    }
 
-        public IndexModel(RazorApp.Data.ApplicationDbContext context)
+    public IList<Student> Student { get; set; } = default!;
+
+    public async Task OnGetAsync()
+    {
+        if (_context.Students != null)
         {
-            _context = context;
-        }
-
-        public IList<Student> Student { get;set; } = default!;
-
-        public async Task OnGetAsync()
-        {
-            if (_context.Students != null)
-            {
-                Student = await _context.Students.ToListAsync();
-            }
+            Student = await _context.Students.ToListAsync();
         }
     }
 }
