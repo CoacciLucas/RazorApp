@@ -8,9 +8,9 @@ namespace RazorApp.Pages.Premiums;
 
 public class EditModel : PageModel
 {
-    private readonly Data.ApplicationDbContext _context;
+    private readonly Data.AppDbContext _context;
 
-    public EditModel(Data.ApplicationDbContext context)
+    public EditModel(Data.AppDbContext context)
     {
         _context = context;
     }

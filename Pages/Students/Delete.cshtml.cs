@@ -7,9 +7,9 @@ namespace RazorApp.Pages.Students;
 
 public class DeleteModel : PageModel
 {
-    private readonly Data.ApplicationDbContext _context;
+    private readonly Data.AppDbContext _context;
 
-    public DeleteModel(Data.ApplicationDbContext context)
+    public DeleteModel(Data.AppDbContext context)
     {
         _context = context;
     }

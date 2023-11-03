@@ -7,9 +7,9 @@ namespace RazorApp.Pages.Premiums
 {
     public class CreateModel : PageModel
     {
-        private readonly Data.ApplicationDbContext _context;
+        private readonly Data.AppDbContext _context;
 
-        public CreateModel(Data.ApplicationDbContext context)
+        public CreateModel(Data.AppDbContext context)
         {
             _context = context;
         }

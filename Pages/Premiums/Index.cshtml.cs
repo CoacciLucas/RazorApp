@@ -6,9 +6,9 @@ namespace RazorApp.Pages_Premiums
 {
     public class IndexModel : PageModel
     {
-        private readonly RazorApp.Data.ApplicationDbContext _context;
+        private readonly RazorApp.Data.AppDbContext _context;
 
-        public IndexModel(RazorApp.Data.ApplicationDbContext context)
+        public IndexModel(RazorApp.Data.AppDbContext context)
         {
             _context = context;
         }

@@ -7,9 +7,9 @@ namespace RazorApp.Pages.Premiums;
 
 public class DetailsModel : PageModel
 {
-    private readonly Data.ApplicationDbContext _context;
+    private readonly Data.AppDbContext _context;
 
-    public DetailsModel(Data.ApplicationDbContext context)
+    public DetailsModel(Data.AppDbContext context)
     {
         _context = context;
     }

@@ -6,9 +6,9 @@ namespace RazorApp.Pages.Students;
 
 public class IndexModel : PageModel
 {
-    private readonly Data.ApplicationDbContext _context;
+    private readonly Data.AppDbContext _context;
 
-    public IndexModel(Data.ApplicationDbContext context)
+    public IndexModel(Data.AppDbContext context)
     {
         _context = context;
     }

@@ -1,34 +1,35 @@
+using Application.Reads.DTOs;
+using AutoMapper;
 using Domain.Entities;
+using Domain.Repositories;
+using Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging.Signing;
 
 namespace RazorApp.Pages.Students;
 
 public class EditModel : PageModel
 {
-    private readonly Data.ApplicationDbContext _context;
-
-    public EditModel(Data.ApplicationDbContext context)
+    private readonly IStudentService _studentService;
+    private readonly IStudentRepository _studentRepository;
+    private readonly IMapper _mapper;
+    public EditModel(IStudentService studentService, IMapper mapper, IStudentRepository studentRepository)
     {
-        _context = context;
+        _studentService = studentService;
+        _mapper = mapper;
+        _studentRepository = studentRepository;
     }
 
     [BindProperty]
-    public Student Student { get; set; } = default!;
+    public StudentDTO Student { get; set; } = default!;
 
-    public async Task<IActionResult> OnGetAsync(int? id)
+    public async Task<IActionResult> OnGetAsync(int id)
     {
-        if (id == null || _context.Students == null)
-        {
-            return NotFound();
-        }
-
-        var student = await _context.Students.FirstOrDefaultAsync(m => m.Id == id);
+        var student = await _studentService.GetByIdAsyncAsNoTracking(id);
         if (student == null)
-        {
             return NotFound();
-        }
         Student = student;
         return Page();
     }
@@ -42,11 +43,11 @@ public class EditModel : PageModel
             return Page();
         }
 
-        _context.Attach(Student).State = EntityState.Modified;
-
         try
         {
-            await _context.SaveChangesAsync();
+            var student = _mapper.Map<Student>(Student);
+            await _studentRepository.UpdateAsync(student);
+            
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -65,6 +66,7 @@ public class EditModel : PageModel
 
     private bool StudentExists(int id)
     {
-        return (_context.Students?.Any(e => e.Id == id)).GetValueOrDefault();
+        var student = _studentService.GetByIdAsyncAsNoTracking(id);
+        return student != null;
     }
 }
