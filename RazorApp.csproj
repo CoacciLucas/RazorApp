@@ -35,7 +35,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application.Commands\" />
     <Folder Include="Application.Reads\" />
     <Folder Include="Models\" />
   </ItemGroup>

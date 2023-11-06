@@ -18,5 +18,17 @@ public class Student
     [DisplayName("E-mail")]
     public string Email { get; set; } = string.Empty;
 
-    public List<Premium> Premiums { get; set; } = new();    
+    public List<Premium> Premiums { get; set; } = new();
+
+    public Student SetName(string name)
+    {
+        Name = name;
+        return this;
+    }
+    
+    public Student SetEmail(string email)
+    {
+        Email = email;
+        return this;
+    }
 }

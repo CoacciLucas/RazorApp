@@ -1,13 +1,8 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Commands.Notification;
 
-public class NotificationDomain : INotification
+public class NotificationDomainT : INotification
 {
     public DateTimeOffset Timestamp { get; private set; }
 
@@ -17,20 +12,20 @@ public class NotificationDomain : INotification
 
     public int AggregateId { get; private set; }
 
-    public NotificationDomain(string message)
+    public NotificationDomainT(string message)
     {
         Timestamp = DateTimeOffset.Now;
         Message = message;
     }
 
-    public NotificationDomain(string messageId, string message)
+    public NotificationDomainT(string messageId, string message)
     {
         Timestamp = DateTimeOffset.Now;
         Message = message;
         MessageId = messageId;
     }
 
-    public NotificationDomain(string messageId, string message, int aggregateId)
+    public NotificationDomainT(string messageId, string message, int aggregateId)
     {
         Timestamp = DateTimeOffset.Now;
         Message = message;

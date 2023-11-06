@@ -1,10 +1,15 @@
-using AutoMapper;
+using Application.Commands;
+using Application.Commands.Handler;
 using Domain.Repositories;
 using Domain.Services;
 using Domain.Services.Interfaces;
+using Infra.Data.Base.UnitOfWork;
+using Infra.Data.Interfaces;
 using Infra.Data.Repository;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using RazorApp.Application.Commands;
 using RazorApp.Data;
 using System.Reflection;
 
@@ -25,6 +30,14 @@ builder.Services.AddRazorPages();
 builder.Services.AddTransient<IStudentRepository, StudentRepository>();
 
 builder.Services.AddScoped<IStudentService, StudentService>();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+builder.Services.AddTransient<IRequestHandler<EditStudentCommand, CommandResult>, EditStudentCommandHandler>();
+
+builder.Services.AddTransient<IRequestHandler<CreateStudentCommand, CommandResult>, CreateStudentCommandHandler>();
+
+builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
 
 builder.Services.AddCors(o =>
 {

@@ -3,10 +3,11 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Repositories;
 using Domain.Services.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Packaging.Signing;
+using RazorApp.Application.Commands;
 
 namespace RazorApp.Pages.Students;
 
@@ -15,11 +16,13 @@ public class EditModel : PageModel
     private readonly IStudentService _studentService;
     private readonly IStudentRepository _studentRepository;
     private readonly IMapper _mapper;
-    public EditModel(IStudentService studentService, IMapper mapper, IStudentRepository studentRepository)
+    private readonly IMediator _handle;
+    public EditModel(IStudentService studentService, IMapper mapper, IStudentRepository studentRepository, IMediator handle)
     {
         _studentService = studentService;
         _mapper = mapper;
         _studentRepository = studentRepository;
+        _handle = handle;
     }
 
     [BindProperty]
@@ -38,6 +41,8 @@ public class EditModel : PageModel
     // For more details, see https://aka.ms/RazorPagesCRUD.
     public async Task<IActionResult> OnPostAsync()
     {
+        
+
         if (!ModelState.IsValid)
         {
             return Page();
@@ -45,20 +50,14 @@ public class EditModel : PageModel
 
         try
         {
-            var student = _mapper.Map<Student>(Student);
-            await _studentRepository.UpdateAsync(student);
-            
+           await _handle.Send(new EditStudentCommand(Student.Id, Student.Name, Student.Email));
         }
         catch (DbUpdateConcurrencyException)
         {
             if (!StudentExists(Student.Id))
-            {
                 return NotFound();
-            }
             else
-            {
                 throw;
-            }
         }
 
         return RedirectToPage("./Index");

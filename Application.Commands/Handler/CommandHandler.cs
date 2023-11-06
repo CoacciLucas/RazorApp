@@ -13,7 +13,7 @@ public abstract class CommandHandler
 
     protected readonly IMediator _mediator;
 
-    protected readonly INotificationHandler<NotificationDomain> _notifications;
+    protected readonly INotificationHandler<NotificationDomainT> _notifications;
 
     protected readonly ILogger<CommandHandler> _logger;
 
@@ -21,20 +21,20 @@ public abstract class CommandHandler
     {
     }
 
-    public CommandHandler(IMediator mediator, INotificationHandler<NotificationDomain> notifications)
+    public CommandHandler(IMediator mediator, INotificationHandler<NotificationDomainT> notifications)
     {
         _mediator = mediator;
         _notifications = notifications;
     }
 
-    public CommandHandler(IUnitOfWork uow, IMediator mediator, INotificationHandler<NotificationDomain> notifications)
+    public CommandHandler(IUnitOfWork uow, IMediator mediator, INotificationHandler<NotificationDomainT> notifications)
     {
         _uow = uow;
         _mediator = mediator;
         _notifications = notifications;
     }
 
-    public CommandHandler(IUnitOfWork uow, IMediator mediator, INotificationHandler<NotificationDomain> notifications, ILogger<CommandHandler> logger = null)
+    public CommandHandler(IUnitOfWork uow, IMediator mediator, INotificationHandler<NotificationDomainT> notifications, ILogger<CommandHandler> logger = null)
     {
         _uow = uow;
         _mediator = mediator;
@@ -51,7 +51,7 @@ public abstract class CommandHandler
 
         foreach (ValidationFailure error in entity.ValidationResult.Errors)
         {
-            await _mediator.Publish(new NotificationDomain(error.PropertyName, error.ErrorMessage));
+            await _mediator.Publish(new NotificationDomainT(error.PropertyName, error.ErrorMessage));
         }
     }
 
@@ -66,53 +66,54 @@ public abstract class CommandHandler
         {
             foreach (ValidationFailure error in entity.ValidationResult.Errors)
             {
-                await _mediator.Publish(new NotificationDomain(error.PropertyName, error.ErrorMessage));
+                await _mediator.Publish(new NotificationDomainT(error.PropertyName, error.ErrorMessage));
             }
         }
     }
 
     protected async void AddNotification(string key, string message)
     {
-        await _mediator.Publish(new NotificationDomain(key, message));
+        var notificationDomain = new NotificationDomainT(key, message);
+        await _mediator.Publish(notificationDomain);
     }
 
-    public async void AddNotification(NotificationDomain notification)
+    public async void AddNotification(NotificationDomainT notification)
     {
-        await _mediator.Publish(new NotificationDomain(notification.MessageId, notification.Message));
+        await _mediator.Publish(new NotificationDomainT(notification.MessageId, notification.Message));
     }
 
-    public async void AddNotifications(IReadOnlyCollection<NotificationDomain> notifications)
+    public async void AddNotifications(IReadOnlyCollection<NotificationDomainT> notifications)
     {
-        foreach (NotificationDomain notification in notifications)
+        foreach (NotificationDomainT notification in notifications)
         {
-            await _mediator.Publish(new NotificationDomain(notification.MessageId, notification.Message));
+            await _mediator.Publish(new NotificationDomainT(notification.MessageId, notification.Message));
         }
     }
 
-    public async void AddNotifications(IList<NotificationDomain> notifications)
+    public async void AddNotifications(IList<NotificationDomainT> notifications)
     {
-        foreach (NotificationDomain notification in notifications)
+        foreach (NotificationDomainT notification in notifications)
         {
-            await _mediator.Publish(new NotificationDomain(notification.MessageId, notification.Message));
+            await _mediator.Publish(new NotificationDomainT(notification.MessageId, notification.Message));
         }
     }
 
-    public async void AddNotifications(ICollection<NotificationDomain> notifications)
+    public async void AddNotifications(ICollection<NotificationDomainT> notifications)
     {
-        foreach (NotificationDomain notification in notifications)
+        foreach (NotificationDomainT notification in notifications)
         {
-            await _mediator.Publish(new NotificationDomain(notification.MessageId, notification.Message));
+            await _mediator.Publish(new NotificationDomainT(notification.MessageId, notification.Message));
         }
     }
 
     protected bool IsSuccess()
     {
-        return !((NotificationDomainHandler)_notifications).HasNotifications();
+        return !((NotificationDomainTHandler)_notifications).HasNotifications();
     }
 
-    protected List<NotificationDomain> DomainNotifications()
+    protected List<NotificationDomainT> DomainNotifications()
     {
-        return ((NotificationDomainHandler)_notifications).GetNotifications();
+        return ((NotificationDomainTHandler)_notifications).GetNotifications();
     }
 
     protected async Task CommittAsync()
