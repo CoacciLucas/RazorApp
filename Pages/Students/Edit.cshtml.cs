@@ -1,6 +1,5 @@
 using Application.Reads.DTOs;
 using AutoMapper;
-using Domain.Entities;
 using Domain.Repositories;
 using Domain.Services.Interfaces;
 using MediatR;
@@ -14,14 +13,10 @@ namespace RazorApp.Pages.Students;
 public class EditModel : PageModel
 {
     private readonly IStudentService _studentService;
-    private readonly IStudentRepository _studentRepository;
-    private readonly IMapper _mapper;
     private readonly IMediator _handle;
-    public EditModel(IStudentService studentService, IMapper mapper, IStudentRepository studentRepository, IMediator handle)
+    public EditModel(IStudentService studentService, IMediator handle)
     {
         _studentService = studentService;
-        _mapper = mapper;
-        _studentRepository = studentRepository;
         _handle = handle;
     }
 
@@ -37,20 +32,14 @@ public class EditModel : PageModel
         return Page();
     }
 
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see https://aka.ms/RazorPagesCRUD.
     public async Task<IActionResult> OnPostAsync()
     {
-        
-
         if (!ModelState.IsValid)
-        {
             return Page();
-        }
 
         try
         {
-           await _handle.Send(new EditStudentCommand(Student.Id, Student.Name, Student.Email));
+            await _handle.Send(new EditStudentCommand(Student.Id, Student.Name, Student.Email));
         }
         catch (DbUpdateConcurrencyException)
         {

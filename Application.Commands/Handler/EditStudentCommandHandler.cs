@@ -22,7 +22,7 @@ public class EditStudentCommandHandler : CommandHandler, IRequestHandler<EditStu
 
     public async Task<CommandResult> Handle(EditStudentCommand request, CancellationToken cancellationToken)
     {
-        var student = await _studentRepository.GetByIdAsync(5);
+        var student = await _studentRepository.GetByIdAsync(request.Id);
         if (student == null)
             AddNotification("Student", "Student not found");
 
