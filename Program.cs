@@ -1,8 +1,7 @@
 using Application.Commands;
 using Application.Commands.Handler;
+using AutoMapper;
 using Domain.Repositories;
-using Domain.Services;
-using Domain.Services.Interfaces;
 using Infra.Data.Base.UnitOfWork;
 using Infra.Data.Interfaces;
 using Infra.Data.Repository;
@@ -27,17 +26,18 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<AppDbContext>();
 builder.Services.AddRazorPages();
 
-builder.Services.AddTransient<IStudentRepository, StudentRepository>();
-
-builder.Services.AddScoped<IStudentService, StudentService>();
-
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddTransient<IRequestHandler<EditStudentCommand, CommandResult>, EditStudentCommandHandler>();
+builder.Services.AddTransient<IStudentRepository, StudentRepository>();
 
+builder.Services.AddTransient<IRequestHandler<EditStudentCommand, CommandResult>, EditStudentCommandHandler>();
 builder.Services.AddTransient<IRequestHandler<CreateStudentCommand, CommandResult>, CreateStudentCommandHandler>();
 
-builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
+
+builder.Services.AddAutoMapper(typeof(CreateStudentCommand));
+builder.Services.AddAutoMapper(typeof(EditStudentCommand));
+
 
 builder.Services.AddCors(o =>
 {
@@ -45,6 +45,17 @@ builder.Services.AddCors(o =>
 });
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+var mappingConfig = new MapperConfiguration(mc =>
+{
+    mc.AddMaps(new[] {
+            $"Application.Reads"
+        });
+});
+
+var mapper = mappingConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
+
 
 var app = builder.Build();
 

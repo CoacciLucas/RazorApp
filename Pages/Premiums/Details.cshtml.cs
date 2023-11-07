@@ -16,7 +16,7 @@ public class DetailsModel : PageModel
 
     public Premium Premium { get; set; } = default!;
 
-    public async Task<IActionResult> OnGetAsync(int? id)
+    public async Task<IActionResult> OnGetAsync(Guid? id)
     {
         if (id == null || _context.Premiums == null)
         {

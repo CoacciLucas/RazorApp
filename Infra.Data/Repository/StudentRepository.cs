@@ -13,13 +13,13 @@ public class StudentRepository : Repository<Student>, IStudentRepository
 
     }
 
-    public async Task<Student> GetByIdAsyncAsNoTracking(int id)
+    public async Task<Student?> GetByIdAsyncAsNoTracking(Guid id)
     {
         return await _context.Students
             .AsNoTracking()
             .FirstOrDefaultAsync(a => a.Id == id);
     }
-    public async Task<Student> GetByIdAsync(int id)
+    public async Task<Student?> GetByIdAsync(Guid id)
     {
         return await _context.Students
             .FirstOrDefaultAsync(a => a.Id == id);

@@ -1,7 +1,8 @@
-﻿using Application.Commands.Notification;
+﻿using Domain.Entities;
 using Domain.Repositories;
 using Infra.Data.Interfaces;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using RazorApp.Application.Commands;
 
 namespace Application.Commands.Handler
@@ -12,28 +13,20 @@ namespace Application.Commands.Handler
 
         public CreateStudentCommandHandler(IUnitOfWork unitOfWork,
             IMediator mediator,
-            INotificationHandler<NotificationDomainT> notification,
             ILogger<CommandHandler> logger,
             IStudentRepository studentRepository)
-            : base(unitOfWork, mediator, notification, logger)
+            : base(unitOfWork, mediator, logger)
         {
             _studentRepository = studentRepository;
         }
 
         public async Task<CommandResult> Handle(CreateStudentCommand request, CancellationToken cancellationToken)
         {
-            var student = await _studentRepository.GetByIdAsync(2);
+            var student = new Student(request.Name, request.Email);
 
-            student
-                .SetName(request.Name)
-                .SetEmail(request.Email);
+            await _studentRepository.AddAsync(student);
 
-            await _studentRepository.UpdateAsync(student);
-
-            if (!IsSuccess())
-                return new CommandResult(false);
-
-            await CommittAsync();
+            await _uow.CommitAsync();
 
             return new CommandResult(true);
         }

@@ -17,7 +17,7 @@ public class DeleteModel : PageModel
     [BindProperty]
     public Premium Premium { get; set; } = default!;
 
-    public async Task<IActionResult> OnGetAsync(int? id)
+    public async Task<IActionResult> OnGetAsync(Guid? id)
     {
         if (id == null || _context.Premiums == null)
         {
@@ -37,7 +37,7 @@ public class DeleteModel : PageModel
         return Page();
     }
 
-    public async Task<IActionResult> OnPostAsync(int? id)
+    public async Task<IActionResult> OnPostAsync(Guid? id)
     {
         if (id == null || _context.Premiums == null)
         {

@@ -18,7 +18,7 @@ public class EditModel : PageModel
     [BindProperty]
     public Premium Premium { get; set; } = default!;
 
-    public async Task<IActionResult> OnGetAsync(int? id)
+    public async Task<IActionResult> OnGetAsync(Guid? id)
     {
         if (id == null || _context.Premiums == null)
         {
@@ -65,7 +65,7 @@ public class EditModel : PageModel
         return RedirectToPage("./Index");
     }
 
-    private bool PremiumExists(int id)
+    private bool PremiumExists(Guid id)
     {
         return (_context.Premiums?.Any(e => e.Id == id)).GetValueOrDefault();
     }

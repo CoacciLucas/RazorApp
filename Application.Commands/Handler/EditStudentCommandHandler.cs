@@ -1,7 +1,7 @@
-﻿using Application.Commands.Notification;
-using Domain.Repositories;
+﻿using Domain.Repositories;
 using Infra.Data.Interfaces;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using RazorApp.Application.Commands;
 
 namespace Application.Commands.Handler;
@@ -12,10 +12,9 @@ public class EditStudentCommandHandler : CommandHandler, IRequestHandler<EditStu
 
     public EditStudentCommandHandler(IUnitOfWork unitOfWork,
         IMediator mediator,
-        INotificationHandler<NotificationDomainT> notification,
         ILogger<CommandHandler> logger,
         IStudentRepository studentRepository)
-        : base(unitOfWork, mediator, notification, logger)
+        : base(unitOfWork, mediator, logger)
     {
         _studentRepository = studentRepository;
     }
@@ -23,11 +22,11 @@ public class EditStudentCommandHandler : CommandHandler, IRequestHandler<EditStu
     public async Task<CommandResult> Handle(EditStudentCommand request, CancellationToken cancellationToken)
     {
         var student = await _studentRepository.GetByIdAsync(request.Id);
-        if (student == null)
+        /*if (student == null)
             AddNotification("Student", "Student not found");
 
         if (!IsSuccess())
-            return new CommandResult(false);
+            return new CommandResult(false);*/
 
         student
             .SetName(request.Name)
@@ -35,7 +34,7 @@ public class EditStudentCommandHandler : CommandHandler, IRequestHandler<EditStu
 
         await _studentRepository.UpdateAsync(student);
 
-        await CommittAsync();
+        await _uow.CommitAsync();
 
         return new CommandResult(true);
     }

@@ -1,16 +1,17 @@
 using Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using RazorApp.Application.Commands;
 
 namespace RazorApp.Pages.Students;
 
 public class CreateModel : PageModel
 {
-    private readonly Data.AppDbContext _context;
-
-    public CreateModel(Data.AppDbContext context)
+    private readonly IMediator _handle;
+    public CreateModel(IMediator handle)
     {
-        _context = context;
+        _handle = handle;
     }
 
     public IActionResult OnGet()
@@ -21,18 +22,22 @@ public class CreateModel : PageModel
     [BindProperty]
     public Student Student { get; set; } = default!;
 
-
-    // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
     public async Task<IActionResult> OnPostAsync()
     {
-        if (!ModelState.IsValid || _context.Students == null || Student == null)
-        {
+        if (!ModelState.IsValid)
             return Page();
+
+        try
+        {
+            var result = await _handle.Send(new CreateStudentCommand(Student.Name, Student.Email));
         }
-
-        _context.Students.Add(Student);
-        await _context.SaveChangesAsync();
-
+        catch (Exception)
+        {
+            TempData["error"] = "Error while creating student";
+            return RedirectToPage("./Index");
+        }
+           
+        TempData["success"] = "Student created successfully";
         return RedirectToPage("./Index");
     }
 }

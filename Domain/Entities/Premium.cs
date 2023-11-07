@@ -1,13 +1,11 @@
-﻿using System.ComponentModel;
+﻿using Domain.Entities.Core;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities;
-public class Premium
+public class Premium : Entity
 {
-    [Key]
-    [DisplayName("Id")]
-    public int Id { get; set; }
-
     [Required(ErrorMessage = "Informe o título do Premium!")]
     [StringLength(80, ErrorMessage = "O título deve conter até 80 caracteres!")]
     [MinLength(5, ErrorMessage = "O título deve conter pelo menos 5 caracteres!")]
@@ -24,6 +22,6 @@ public class Premium
 
     [DisplayName("Aluno")]
     [Required(ErrorMessage = "Aluno inválido")]
-    public int StudentId { get; set; }
+    public Guid StudentId { get; set; }
     public Student? Student { get; set; }
 }

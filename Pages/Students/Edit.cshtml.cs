@@ -1,34 +1,34 @@
 using Application.Reads.DTOs;
 using AutoMapper;
 using Domain.Repositories;
-using Domain.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using RazorApp.Application.Commands;
 
 namespace RazorApp.Pages.Students;
 
 public class EditModel : PageModel
 {
-    private readonly IStudentService _studentService;
+    private readonly IStudentRepository _studentRepository;
+    private readonly IMapper _mapper;
     private readonly IMediator _handle;
-    public EditModel(IStudentService studentService, IMediator handle)
+    public EditModel(IStudentRepository studentRepository, IMediator handle, IMapper mapper)
     {
-        _studentService = studentService;
+        _studentRepository = studentRepository;
         _handle = handle;
+        _mapper = mapper;
     }
 
     [BindProperty]
     public StudentDTO Student { get; set; } = default!;
 
-    public async Task<IActionResult> OnGetAsync(int id)
+    public async Task<IActionResult> OnGetAsync(Guid id)
     {
-        var student = await _studentService.GetByIdAsyncAsNoTracking(id);
+        var student = await _studentRepository.GetByIdAsyncAsNoTracking(id);
         if (student == null)
             return NotFound();
-        Student = student;
+        Student = _mapper.Map<StudentDTO>(student);
         return Page();
     }
 
@@ -37,24 +37,24 @@ public class EditModel : PageModel
         if (!ModelState.IsValid)
             return Page();
 
-        try
+        var result = await _handle.Send(new EditStudentCommand(Student.Id, Student.Name, Student.Email));
+
+        if (!result.Success)
+            TempData["error"] = "Error while editing student";
+
+        if (!StudentExists(Student.Id))
         {
-            await _handle.Send(new EditStudentCommand(Student.Id, Student.Name, Student.Email));
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!StudentExists(Student.Id))
-                return NotFound();
-            else
-                throw;
+            TempData["error"] = "Student not found";
+            return RedirectToPage("./Index");
         }
 
+        TempData["success"] = "Student edited successfully";
         return RedirectToPage("./Index");
     }
 
-    private bool StudentExists(int id)
+    private bool StudentExists(Guid id)
     {
-        var student = _studentService.GetByIdAsyncAsNoTracking(id);
+        var student = _studentRepository.GetByIdAsyncAsNoTracking(id);
         return student != null;
     }
 }

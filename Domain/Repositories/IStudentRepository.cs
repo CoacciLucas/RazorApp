@@ -4,6 +4,6 @@ namespace Domain.Repositories;
 
 public interface IStudentRepository : IRepository<Student>
 {
-    Task<Student> GetByIdAsync(int id);
-    Task<Student> GetByIdAsyncAsNoTracking(int id);
+    Task<Student?> GetByIdAsync(Guid id);
+    Task<Student?> GetByIdAsyncAsNoTracking(Guid id);
 }

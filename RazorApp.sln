@@ -17,9 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Commands", "App
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.Reads", "Application.Reads\Application.Reads.csproj", "{0E7D9091-78D5-4F6E-BE30-802E2A7A7472}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{6198CE68-447D-4C45-8145-7D7ACA548A0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{6198CE68-447D-4C45-8145-7D7ACA548A0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infra.Data", "Infra.Data\Infra.Data.csproj", "{56059119-43FB-41FB-81A7-22CCD2D2F380}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infra.Data", "Infra.Data\Infra.Data.csproj", "{56059119-43FB-41FB-81A7-22CCD2D2F380}"
 	ProjectSection(ProjectDependencies) = postProject
 		{6198CE68-447D-4C45-8145-7D7ACA548A0E} = {6198CE68-447D-4C45-8145-7D7ACA548A0E}
 	EndProjectSection

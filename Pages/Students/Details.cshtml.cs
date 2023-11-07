@@ -1,5 +1,6 @@
 using Application.Reads.DTOs;
-using Domain.Services.Interfaces;
+using AutoMapper;
+using Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -7,22 +8,24 @@ namespace RazorApp.Pages.Students;
 
 public class DetailsModel : PageModel
 {
-    private readonly IStudentService _studentService;
+    private readonly IStudentRepository _studentRepository;
+    private readonly IMapper _mapper;
 
-    public DetailsModel(IStudentService studentService)
+    public DetailsModel(IStudentRepository studentRepository, IMapper mapper)
     {
-        _studentService = studentService;
+        _studentRepository = studentRepository;
+        _mapper = mapper;
     }
 
     public StudentDTO Student { get; set; } = default!;
 
-    public async Task<IActionResult> OnGetAsync(int id)
+    public async Task<IActionResult> OnGetAsync(Guid id)
     {
-        var student = await _studentService.GetByIdAsyncAsNoTracking(id);
+        var student = await _studentRepository.GetByIdAsyncAsNoTracking(id);
         if (student == null)
             return NotFound();
 
-        Student = student;
+        Student = _mapper.Map<StudentDTO>(student);
 
         return Page();
     }
