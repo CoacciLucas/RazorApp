@@ -1,25 +1,25 @@
-using Domain.Entities;
+using Application.Reads.DTOs;
+using Application.Reads.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 
 namespace RazorApp.Pages.Students;
 
 public class IndexModel : PageModel
 {
-    private readonly Data.AppDbContext _context;
+    private readonly IMediator _handle;
 
-    public IndexModel(Data.AppDbContext context)
+    public IndexModel(IMediator handle)
     {
-        _context = context;
+        _handle = handle;
     }
 
-    public IList<Student> Student { get; set; } = default!;
+    public IList<StudentDTO> Student { get; set; } = default!;
 
     public async Task OnGetAsync()
     {
-        if (_context.Students != null)
-        {
-            Student = await _context.Students.ToListAsync();
-        }
+        var result = await _handle.Send(new GetAllStudentsQuery());
+
+        Student = result;
     }
 }

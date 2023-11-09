@@ -13,6 +13,12 @@ public class StudentRepository : Repository<Student>, IStudentRepository
 
     }
 
+    public async Task<List<Student>> GetAllAsyncAsNoTracking()
+    {
+        return await _context.Students
+            .AsNoTracking()
+            .ToListAsync();
+    }
     public async Task<Student?> GetByIdAsyncAsNoTracking(Guid id)
     {
         return await _context.Students

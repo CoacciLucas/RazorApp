@@ -28,16 +28,12 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddTransient<IStudentRepository, StudentRepository>();
-
-builder.Services.AddTransient<IRequestHandler<EditStudentCommand, CommandResult>, EditStudentCommandHandler>();
-builder.Services.AddTransient<IRequestHandler<CreateStudentCommand, CommandResult>, CreateStudentCommandHandler>();
+DependencyRegister.RegisterHandlers(builder.Services);
+DependencyRegister.RegisterRepositories(builder.Services);
+DependencyRegister.RegisterServices(builder.Services);
+DependencyRegister.RegisterQueryHandlers(builder.Services);
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
-
-builder.Services.AddAutoMapper(typeof(CreateStudentCommand));
-builder.Services.AddAutoMapper(typeof(EditStudentCommand));
-
 
 builder.Services.AddCors(o =>
 {

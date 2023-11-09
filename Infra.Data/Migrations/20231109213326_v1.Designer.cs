@@ -12,7 +12,7 @@ using RazorApp.Data;
 namespace Infra.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20231107203852_v1")]
+    [Migration("20231109213326_v1")]
     partial class v1
     {
         /// <inheritdoc />

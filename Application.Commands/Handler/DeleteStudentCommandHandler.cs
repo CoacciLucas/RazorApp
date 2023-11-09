@@ -1,16 +1,16 @@
-﻿using Domain.Repositories;
+﻿using Application.Commands.Commands;
+using Domain.Repositories;
 using Infra.Data.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using RazorApp.Application.Commands;
 
 namespace Application.Commands.Handler;
 
-public class EditStudentCommandHandler : CommandHandler, IRequestHandler<EditStudentCommand, CommandResult>
+public class DeleteStudentCommandHandler : CommandHandler, IRequestHandler<DeleteStudentCommand, CommandResult>
 {
     private readonly IStudentRepository _studentRepository;
 
-    public EditStudentCommandHandler(IUnitOfWork unitOfWork,
+    public DeleteStudentCommandHandler(IUnitOfWork unitOfWork,
         IMediator mediator,
         ILogger<CommandHandler> logger,
         IStudentRepository studentRepository)
@@ -19,18 +19,18 @@ public class EditStudentCommandHandler : CommandHandler, IRequestHandler<EditStu
         _studentRepository = studentRepository;
     }
 
-    public async Task<CommandResult> Handle(EditStudentCommand request, CancellationToken cancellationToken)
+    public async Task<CommandResult> Handle(DeleteStudentCommand request, CancellationToken cancellationToken)
     {
         var student = await _studentRepository.GetByIdAsync(request.Id);
 
-        student
-            .SetName(request.Name)
-            .SetEmail(request.Email);
+        if (student == null)
+            return new CommandResult(false, "Student not found");
 
-        await _studentRepository.UpdateAsync(student);
+        await _studentRepository.DeleteAsync(student);
 
         await _uow.CommitAsync();
 
         return new CommandResult(true);
     }
+
 }

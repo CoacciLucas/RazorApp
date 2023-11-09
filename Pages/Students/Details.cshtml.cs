@@ -1,6 +1,6 @@
 using Application.Reads.DTOs;
-using AutoMapper;
-using Domain.Repositories;
+using Application.Reads.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -8,25 +8,19 @@ namespace RazorApp.Pages.Students;
 
 public class DetailsModel : PageModel
 {
-    private readonly IStudentRepository _studentRepository;
-    private readonly IMapper _mapper;
-
-    public DetailsModel(IStudentRepository studentRepository, IMapper mapper)
+    private readonly IMediator _handle;
+    public DetailsModel(IMediator handle)
     {
-        _studentRepository = studentRepository;
-        _mapper = mapper;
+        _handle = handle;
     }
 
     public StudentDTO Student { get; set; } = default!;
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {
-        var student = await _studentRepository.GetByIdAsyncAsNoTracking(id);
-        if (student == null)
-            return NotFound();
+        var result = await _handle.Send(new GetStudentByIdQuery(id));
 
-        Student = _mapper.Map<StudentDTO>(student);
-
+        Student = result;
         return Page();
     }
 }

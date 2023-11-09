@@ -1,6 +1,7 @@
 using Application.Reads.DTOs;
 using AutoMapper;
 using Domain.Repositories;
+using Domain.Services.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,12 +11,12 @@ namespace RazorApp.Pages.Students;
 
 public class EditModel : PageModel
 {
-    private readonly IStudentRepository _studentRepository;
+    private readonly IStudentService _studentService;
     private readonly IMapper _mapper;
     private readonly IMediator _handle;
-    public EditModel(IStudentRepository studentRepository, IMediator handle, IMapper mapper)
+    public EditModel(IStudentService studentService, IMediator handle, IMapper mapper)
     {
-        _studentRepository = studentRepository;
+        _studentService = studentService;
         _handle = handle;
         _mapper = mapper;
     }
@@ -25,9 +26,12 @@ public class EditModel : PageModel
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {
-        var student = await _studentRepository.GetByIdAsyncAsNoTracking(id);
+        var student = await _studentService.GetByIdAsyncAsNoTracking(id);
         if (student == null)
-            return NotFound();
+        {
+            TempData["error"] = "Student not found";
+            return RedirectToPage("./Index");
+        }
         Student = _mapper.Map<StudentDTO>(student);
         return Page();
     }
@@ -54,7 +58,7 @@ public class EditModel : PageModel
 
     private bool StudentExists(Guid id)
     {
-        var student = _studentRepository.GetByIdAsyncAsNoTracking(id);
+        var student = _studentService.GetByIdAsyncAsNoTracking(id);
         return student != null;
     }
 }

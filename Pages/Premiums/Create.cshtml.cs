@@ -1,24 +1,31 @@
+using Application.Commands.Commands;
 using Domain.Entities;
+using Domain.Repositories;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using RazorApp.Application.Commands;
 
 namespace RazorApp.Pages.Premiums
 {
     public class CreateModel : PageModel
     {
-        private readonly Data.AppDbContext _context;
-
-        public CreateModel(Data.AppDbContext context)
+        private readonly IMediator _handle;
+        private readonly IStudentRepository _studentRepository;
+        public CreateModel(IMediator handle, IStudentRepository studentRepository)
         {
-            _context = context;
+            _handle = handle;
+            _studentRepository = studentRepository;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            ViewData["StudentId"] = new SelectList(_context.Students, "Id", "Email");
+            var students = await _studentRepository.GetAllAsyncAsNoTracking();
+            ViewData["StudentId"] = new SelectList(students, "Id", "Email");
             return Page();
         }
+
 
         [BindProperty]
         public Premium Premium { get; set; } = default!;
@@ -27,14 +34,20 @@ namespace RazorApp.Pages.Premiums
         // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid || _context.Premiums == null || Premium == null)
-            {
+            if (!ModelState.IsValid)
                 return Page();
+
+            try
+            {
+                var result = await _handle.Send(new CreatePremiumCommand(Premium.Title, Premium.StartDate, Premium.EndDate, Premium.StudentId));
+            }
+            catch (Exception)
+            {
+                TempData["error"] = "Error while creating student";
+                return RedirectToPage("./Index");
             }
 
-            _context.Premiums.Add(Premium);
-            await _context.SaveChangesAsync();
-
+            TempData["success"] = "Student created successfully";
             return RedirectToPage("./Index");
         }
     }

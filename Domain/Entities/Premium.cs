@@ -1,7 +1,6 @@
 ﻿using Domain.Entities.Core;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities;
 public class Premium : Entity
@@ -11,6 +10,15 @@ public class Premium : Entity
     [MinLength(5, ErrorMessage = "O título deve conter pelo menos 5 caracteres!")]
     [DisplayName("Título")]
     public string Title { get; set; } = string.Empty;
+
+    public Premium(string title, DateTime startDate, DateTime endDate, Guid studentId)
+    {
+        Title = title;
+        StartDate = startDate;
+        EndDate = endDate;
+        StudentId = studentId;
+    }
+    public Premium() { }
 
     [DataType(DataType.DateTime)]
     [DisplayName("Início")]

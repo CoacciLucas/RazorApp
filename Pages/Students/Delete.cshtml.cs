@@ -1,57 +1,56 @@
-using Domain.Entities;
+using Application.Commands.Commands;
+using Application.Reads.DTOs;
+using AutoMapper;
+using Domain.Services.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 
 namespace RazorApp.Pages.Students;
 
 public class DeleteModel : PageModel
 {
-    private readonly Data.AppDbContext _context;
-
-    public DeleteModel(Data.AppDbContext context)
+    private readonly IStudentService _studentService;
+    private readonly IMediator _handle;
+    private readonly IMapper _mapper;
+    public DeleteModel(IStudentService studentService, IMediator handle, IMapper mapper)
     {
-        _context = context;
+        _studentService = studentService;
+        _handle = handle;
+        _mapper = mapper;
     }
 
     [BindProperty]
-    public Student Student { get; set; } = default!;
+    public StudentDTO Student { get; set; } = default!;
 
-    public async Task<IActionResult> OnGetAsync(Guid? id)
+    public async Task<IActionResult> OnGetAsync(Guid id)
     {
-        if (id == null || _context.Students == null)
-        {
-            return NotFound();
-        }
-
-        var student = await _context.Students.FirstOrDefaultAsync(m => m.Id == id);
-
+        var student = await _studentService.GetByIdAsyncAsNoTracking(id);
         if (student == null)
-        {
             return NotFound();
-        }
-        else
-        {
-            Student = student;
-        }
+        Student = _mapper.Map<StudentDTO>(student);
         return Page();
     }
 
-    public async Task<IActionResult> OnPostAsync(int? id)
+    public async Task<IActionResult> OnPostAsync(Guid id)
     {
-        if (id == null || _context.Students == null)
-        {
-            return NotFound();
-        }
-        var student = await _context.Students.FindAsync(id);
+        var result = await _handle.Send(new DeleteStudentCommand(id));
 
-        if (student != null)
+        if (!result.Success)
+            TempData["error"] = "Error while editing student";
+
+        if (!StudentExists(id))
         {
-            Student = student;
-            _context.Students.Remove(Student);
-            await _context.SaveChangesAsync();
+            TempData["error"] = "Student not found";
+            return RedirectToPage("./Index");
         }
 
+        TempData["success"] = "Student deleted successfully";
         return RedirectToPage("./Index");
+    }
+    private bool StudentExists(Guid id)
+    {
+        var student = _studentService.GetByIdAsyncAsNoTracking(id);
+        return student != null;
     }
 }
