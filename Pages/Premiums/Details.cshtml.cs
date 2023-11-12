@@ -1,37 +1,26 @@
-using Domain.Entities;
+using Application.Reads.DTOs;
+using Application.Reads.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 
 namespace RazorApp.Pages.Premiums;
 
 public class DetailsModel : PageModel
 {
-    private readonly Data.AppDbContext _context;
-
-    public DetailsModel(Data.AppDbContext context)
+    private readonly IMediator _handle;
+    public DetailsModel(IMediator handle)
     {
-        _context = context;
+        _handle = handle;
     }
 
-    public Premium Premium { get; set; } = default!;
+    public PremiumDTO Premium { get; set; } = default!;
 
-    public async Task<IActionResult> OnGetAsync(Guid? id)
+    public async Task<IActionResult> OnGetAsync(Guid id)
     {
-        if (id == null || _context.Premiums == null)
-        {
-            return NotFound();
-        }
+        var result = await _handle.Send(new GetPremiumByIdQuery(id));
 
-        var premium = await _context.Premiums.FirstOrDefaultAsync(m => m.Id == id);
-        if (premium == null)
-        {
-            return NotFound();
-        }
-        else
-        {
-            Premium = premium;
-        }
+        Premium = result;
         return Page();
     }
 }

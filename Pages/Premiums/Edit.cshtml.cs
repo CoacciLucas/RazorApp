@@ -1,38 +1,47 @@
+using Application.Commands.Commands;
+using Application.Reads.DTOs;
+using AutoMapper;
 using Domain.Entities;
+using Domain.Services.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using RazorApp.Application.Commands;
 
 namespace RazorApp.Pages.Premiums;
 
 public class EditModel : PageModel
 {
-    private readonly Data.AppDbContext _context;
-
-    public EditModel(Data.AppDbContext context)
+    private readonly IPremiumService _premiumService;
+    private readonly IStudentService _studentService;
+    private readonly IMediator _handle;
+    private readonly IMapper _mapper;
+    public EditModel(IPremiumService premiumService, IMediator handle, IStudentService studentService, IMapper mapper)
     {
-        _context = context;
+        _premiumService = premiumService;
+        _handle = handle;
+        _studentService = studentService;
+        _mapper = mapper;
     }
 
     [BindProperty]
-    public Premium Premium { get; set; } = default!;
+    public PremiumDTO Premium { get; set; } = default!;
 
-    public async Task<IActionResult> OnGetAsync(Guid? id)
+    public async Task<IActionResult> OnGetAsync(Guid id)
     {
-        if (id == null || _context.Premiums == null)
-        {
-            return NotFound();
-        }
-
-        var premium = await _context.Premiums.FirstOrDefaultAsync(m => m.Id == id);
+        var premium = await _premiumService.GetByIdAsyncAsNoTracking(id);
+        var students = await _studentService.GetAllAsyncAsNoTracking();
         if (premium == null)
         {
-            return NotFound();
+            TempData["error"] = "Student not found";
+            return RedirectToPage("./Index");
         }
-        Premium = premium;
-        ViewData["StudentId"] = new SelectList(_context.Students, "Id", "Email");
+        Premium = _mapper.Map<PremiumDTO>(premium);
+        ViewData["StudentId"] = new SelectList(students, "Id", "Name");
         return Page();
+       
     }
 
     // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -40,33 +49,26 @@ public class EditModel : PageModel
     public async Task<IActionResult> OnPostAsync()
     {
         if (!ModelState.IsValid)
-        {
             return Page();
+
+        var result = await _handle.Send(new EditPremiumCommand(Premium.Id, Premium.Title, Premium.StartDate, Premium.EndDate, Premium.Student.Id));
+
+        if (!result.Success)
+            TempData["error"] = "Error while editing student";
+
+        if (!PremiumExists(Premium.Id))
+        {
+            TempData["error"] = "Premium not found";
+            return RedirectToPage("./Index");
         }
 
-        _context.Attach(Premium).State = EntityState.Modified;
-
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!PremiumExists(Premium.Id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
+        TempData["success"] = "Premium edited successfully";
 
         return RedirectToPage("./Index");
     }
 
     private bool PremiumExists(Guid id)
     {
-        return (_context.Premiums?.Any(e => e.Id == id)).GetValueOrDefault();
+        return (_premiumService.GetByIdAsyncAsNoTracking(id) != null);
     }
 }

@@ -27,7 +27,7 @@ public class DeleteModel : PageModel
     {
         var student = await _studentService.GetByIdAsyncAsNoTracking(id);
         if (student == null)
-            return NotFound();
+            TempData["error"] = "Student not found!";
         Student = _mapper.Map<StudentDTO>(student);
         return Page();
     }

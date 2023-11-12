@@ -1,4 +1,7 @@
+using Application.Reads.DTOs;
+using Application.Reads.Queries;
 using Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,22 +9,19 @@ namespace RazorApp.Pages_Premiums
 {
     public class IndexModel : PageModel
     {
-        private readonly RazorApp.Data.AppDbContext _context;
-
-        public IndexModel(RazorApp.Data.AppDbContext context)
+        private readonly IMediator _handle;
+        public IndexModel(IMediator handle)
         {
-            _context = context;
+            _handle = handle;
         }
 
-        public IList<Premium> Premium { get; set; } = default!;
+        public IList<PremiumDTO> Premium { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
-            if (_context.Premiums != null)
-            {
-                Premium = await _context.Premiums
-                .Include(p => p.Student).ToListAsync();
-            }
+            var result = await _handle.Send(new GetAllPremiumsQuery());
+
+            Premium = result;
         }
     }
 }

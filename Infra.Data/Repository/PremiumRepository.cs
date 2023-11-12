@@ -16,12 +16,21 @@ public class PremiumRepository : Repository<Premium>, IPremiumRepository
     public async Task<Premium?> GetByIdAsyncAsNoTracking(Guid id)
     {
         return await _context.Premiums
-            .AsNoTracking()
+            .Include(x => x.Student)
+            .AsNoTrackingWithIdentityResolution()
             .FirstOrDefaultAsync(a => a.Id == id);
     }
     public async Task<Premium?> GetByIdAsync(Guid id)
     {
         return await _context.Premiums
+            .Include(x => x.Student)
             .FirstOrDefaultAsync(a => a.Id == id);
+    }
+    public async Task<List<Premium>> GetAllAsyncAsNoTracking()
+    {
+        return await _context.Premiums
+            .Include(x => x.Student)
+            .AsNoTrackingWithIdentityResolution()
+            .ToListAsync();
     }
 }

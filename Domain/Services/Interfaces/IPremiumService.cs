@@ -1,10 +1,11 @@
 ﻿using Domain.Entities;
 
-namespace Domain.Repositories;
+namespace Domain.Services.Interfaces;
 
-public interface IPremiumRepository : IRepository<Premium>
+public interface IPremiumService
 {
     Task<List<Premium>> GetAllAsyncAsNoTracking();
     Task<Premium?> GetByIdAsync(Guid id);
     Task<Premium?> GetByIdAsyncAsNoTracking(Guid id);
+    Task UpdateAsync(Premium premium);
 }

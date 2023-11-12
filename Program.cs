@@ -1,14 +1,9 @@
-using Application.Commands;
-using Application.Commands.Handler;
 using AutoMapper;
-using Domain.Repositories;
 using Infra.Data.Base.UnitOfWork;
 using Infra.Data.Interfaces;
-using Infra.Data.Repository;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using RazorApp.Application.Commands;
 using RazorApp.Data;
 using System.Reflection;
 
