@@ -33,13 +33,21 @@ public class EditModel : PageModel
     {
         var premium = await _premiumService.GetByIdAsyncAsNoTracking(id);
         var students = await _studentService.GetAllAsyncAsNoTracking();
+        var studentsWithEmail = students
+                            .Select(s => new
+                            {
+                                Id = s.Id,
+                                Text = $"{s.Name} ({s.Email})"
+                            })
+                            .ToList();
         if (premium == null)
         {
             TempData["error"] = "Student not found";
             return RedirectToPage("./Index");
         }
         Premium = _mapper.Map<PremiumDTO>(premium);
-        ViewData["StudentId"] = new SelectList(students, "Id", "Name");
+
+        ViewData["StudentId"] = new SelectList(studentsWithEmail, "Id", "Text");
         return Page();
        
     }

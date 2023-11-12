@@ -5,7 +5,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using RazorApp.Application.Commands;
 
 namespace RazorApp.Pages.Premiums
 {
@@ -22,7 +21,14 @@ namespace RazorApp.Pages.Premiums
         public async Task<IActionResult> OnGet()
         {
             var students = await _studentRepository.GetAllAsyncAsNoTracking();
-            ViewData["StudentId"] = new SelectList(students, "Id", "Email");
+            var studentsWithEmail = students
+                                        .Select(s => new
+                                        {
+                                            Id = s.Id,
+                                            Text = $"{s.Name} ({s.Email})"
+                                        })
+                                        .ToList();
+            ViewData["StudentId"] = new SelectList(studentsWithEmail, "Id", "Text");
             return Page();
         }
 
