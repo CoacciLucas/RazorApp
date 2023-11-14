@@ -1,14 +1,15 @@
 using Application.Reads.DTOs;
 using AutoMapper;
-using Domain.Repositories;
 using Domain.Services.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RazorApp.Application.Commands;
 
 namespace RazorApp.Pages.Students;
 
+[Authorize(Roles = "Admin")]
 public class EditModel : PageModel
 {
     private readonly IStudentService _studentService;

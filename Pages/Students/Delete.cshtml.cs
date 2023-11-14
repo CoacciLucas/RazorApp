@@ -3,11 +3,13 @@ using Application.Reads.DTOs;
 using AutoMapper;
 using Domain.Services.Interfaces;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace RazorApp.Pages.Students;
 
+[Authorize(Roles = "Admin")]
 public class DeleteModel : PageModel
 {
     private readonly IStudentService _studentService;

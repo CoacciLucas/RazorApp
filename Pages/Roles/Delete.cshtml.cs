@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace RazorApp.Pages.Premiums;
+namespace RazorApp.Pages.Roles;
 
 [Authorize(Roles = "Admin")]
 public class DeleteModel : PageModel

@@ -11,7 +11,7 @@ using RazorApp.Data;
 
 namespace Infra.Data.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
+    [DbContext(typeof(RazorApp.Data.DbContext))]
     [Migration("20231109213326_v1")]
     partial class v1
     {

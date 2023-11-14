@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace RazorApp.Pages.Premiums;
+namespace RazorApp.Pages.Roles;
 
 public class IndexModel : PageModel
 {
@@ -18,7 +18,7 @@ public class IndexModel : PageModel
 
     public async Task OnGetAsync()
     {
-        var result = await _handle.Send(new GetAllPremiumsQuery());
+        var result = await _handle.Send(new GetAllRolesQuery());
 
         Premium = result;
     }

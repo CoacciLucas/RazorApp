@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace RazorApp.Data;
 
-public class AppDbContext : IdentityDbContext
+public class DbContext : IdentityDbContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options)
+    public DbContext(DbContextOptions<DbContext> options)
         : base(options)
     {
     }

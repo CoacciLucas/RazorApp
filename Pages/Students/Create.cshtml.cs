@@ -1,11 +1,13 @@
 using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RazorApp.Application.Commands;
 
 namespace RazorApp.Pages.Students;
 
+[Authorize(Roles = "Admin")]
 public class CreateModel : PageModel
 {
     private readonly IMediator _handle;

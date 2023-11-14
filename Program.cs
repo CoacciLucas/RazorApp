@@ -11,15 +11,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOptions();
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("Default") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<AppDbContext>(options =>
+var connectionString = builder.Configuration.GetConnectionString("Default") ?? throw new InvalidOperationException("Connection string 'Default' not found.");
+builder.Services.AddDbContext<RazorApp.Data.DbContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDataProtection();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<AppDbContext>();
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<RazorApp.Data.DbContext>();
 builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -73,5 +74,37 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var roles = new[] { "Admin", "Student" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+            await roleManager.CreateAsync(new IdentityRole(role));
+    }
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+    string email = "admin@admin.com";
+    string password = "Test123@";
+
+    if (await userManager.FindByEmailAsync(email) == null)
+    {
+        var user = new IdentityUser();
+        user.UserName = email;
+        user.Email = email;
+        user.EmailConfirmed = true;
+
+        await userManager.CreateAsync(user, password);
+
+        await userManager.AddToRoleAsync(user, "Admin");
+    }
+}
 
 app.Run();

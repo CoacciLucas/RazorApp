@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace RazorApp.Pages.Premiums;
+namespace RazorApp.Pages.Roles;
 [Authorize(Roles = "Admin")]
 public class EditModel : PageModel
 {

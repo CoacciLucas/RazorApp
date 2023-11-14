@@ -8,7 +8,7 @@ namespace Infra.Data.Repository;
 
 public class StudentRepository : Repository<Student>, IStudentRepository
 {
-    public StudentRepository(AppDbContext appDbContext) : base(appDbContext)
+    public StudentRepository(RazorApp.Data.DbContext appDbContext) : base(appDbContext)
     {
 
     }
