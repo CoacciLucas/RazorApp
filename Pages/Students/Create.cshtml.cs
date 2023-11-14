@@ -1,3 +1,4 @@
+using Application.Reads.DTOs;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +23,7 @@ public class CreateModel : PageModel
     }
 
     [BindProperty]
-    public Student Student { get; set; } = default!;
+    public StudentDTO Student { get; set; } = default!;
 
     public async Task<IActionResult> OnPostAsync()
     {

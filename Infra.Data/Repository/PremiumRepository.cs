@@ -8,7 +8,7 @@ namespace Infra.Data.Repository;
 
 public class PremiumRepository : Repository<Premium>, IPremiumRepository
 {
-    public PremiumRepository(RazorApp.Data.DbContext appDbContext) : base(appDbContext)
+    public PremiumRepository(RazorApp.Data.AppDbContext appDbContext) : base(appDbContext)
     {
 
     }

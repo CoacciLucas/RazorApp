@@ -17,35 +17,17 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Premium[0].Title)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Premium[0].StartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Premium[0].EndDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Premium[0].Student)
+                @Html.DisplayNameFor(model => model.Role[0].Name)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Premium)
+        @foreach (var item in Model.Role)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StartDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EndDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Student.Name)
+                    @Html.DisplayFor(modelItem => item.Name)
                 </td>
 
                 @if (User.IsInRole("Admin"))

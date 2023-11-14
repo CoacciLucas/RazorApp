@@ -14,12 +14,12 @@ public class IndexModel : PageModel
         _handle = handle;
     }
 
-    public IList<PremiumDTO> Premium { get; set; } = default!;
+    public IList<IdentityRoleDTO> Role { get; set; } = default!;
 
     public async Task OnGetAsync()
     {
         var result = await _handle.Send(new GetAllRolesQuery());
 
-        Premium = result;
+        Role = result;
     }
 }

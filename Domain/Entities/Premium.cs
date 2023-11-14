@@ -9,7 +9,7 @@ public class Premium : Entity
     [StringLength(80, ErrorMessage = "The title should have up to 80 caracteres!")]
     [MinLength(5, ErrorMessage = "The title should have at least 5 caracteres!")]
     [DisplayName("Title")]
-    public string Title { get; set; } = string.Empty;
+    public string Title { get; private set; } = string.Empty;
 
     public Premium(string title, DateTime startDate, DateTime endDate, Guid studentId)
     {
@@ -22,16 +22,16 @@ public class Premium : Entity
 
     [DataType(DataType.DateTime)]
     [DisplayName("Start")]
-    public DateTime StartDate { get; set; }
+    public DateTime StartDate { get; private set; }
 
     [DataType(DataType.DateTime)]
     [DisplayName("End")]
-    public DateTime EndDate { get; set; }
+    public DateTime EndDate { get; private set; }
 
     [DisplayName("Student")]
     [Required(ErrorMessage = "Invalid Student")]
-    public Guid StudentId { get; set; }
-    public Student? Student { get; set; }
+    public Guid StudentId { get; private set; }
+    public Student? Student { get; private set; }
 
     public Premium SetTitle(string title)
     {

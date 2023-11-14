@@ -7,11 +7,11 @@ namespace Infra.Data.Base.UnitOfWork;
 
 public class UnitOfWork : IUnitOfWork, IDisposable
 {
-    private readonly DbContext _context;
+    private readonly AppDbContext _context;
     private readonly IMediator _mediator;
     private readonly ILogger<UnitOfWork> _logger;
 
-    public UnitOfWork(DbContext context, IMediator mediator, ILogger<UnitOfWork> logger)
+    public UnitOfWork(AppDbContext context, IMediator mediator, ILogger<UnitOfWork> logger)
     {
         _context = context;
         _mediator = mediator;

@@ -5,9 +5,9 @@ namespace Infra.Data.Base;
 
 public abstract class Repository<TEntity> where TEntity : class
 {
-    protected readonly RazorApp.Data.DbContext _context;
+    protected readonly RazorApp.Data.AppDbContext _context;
 
-    public Repository(RazorApp.Data.DbContext context)
+    public Repository(RazorApp.Data.AppDbContext context)
     {
         _context = context;
     }

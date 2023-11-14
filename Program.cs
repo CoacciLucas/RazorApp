@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOptions();
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("Default") ?? throw new InvalidOperationException("Connection string 'Default' not found.");
-builder.Services.AddDbContext<RazorApp.Data.DbContext>(options =>
+builder.Services.AddDbContext<RazorApp.Data.AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -20,7 +20,7 @@ builder.Services.AddDataProtection();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<RazorApp.Data.DbContext>();
+    .AddEntityFrameworkStores<RazorApp.Data.AppDbContext>();
 builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

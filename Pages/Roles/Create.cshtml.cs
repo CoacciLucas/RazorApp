@@ -1,5 +1,5 @@
 using Application.Commands.Commands;
-using Domain.Entities;
+using Application.Reads.DTOs;
 using Domain.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -19,7 +19,6 @@ public class CreateModel : PageModel
         _handle = handle;
         _studentRepository = studentRepository;
     }
-    [Authorize]
     public async Task<IActionResult> OnGet()
     {
         var students = await _studentRepository.GetAllAsyncAsNoTracking();
@@ -30,15 +29,12 @@ public class CreateModel : PageModel
                                         Text = $"{s.Name} ({s.Email})"
                                     })
                                     .ToList();
-        ViewData["StudentId"] = new SelectList(studentsWithEmail, "Id", "Text");
         return Page();
     }
 
 
     [BindProperty]
-    public Premium Premium { get; set; } = default!;
-
-
+    public IdentityRoleDTO Role { get; set; } = default!;
     // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
     public async Task<IActionResult> OnPostAsync()
     {
@@ -47,7 +43,7 @@ public class CreateModel : PageModel
 
         try
         {
-            var result = await _handle.Send(new CreatePremiumCommand(Premium.Title, Premium.StartDate, Premium.EndDate, Premium.StudentId));
+          //  var result = await _handle.Send(new CreatePremiumCommand(Role.Title, Role.StartDate, Role.EndDate, Role.Student.Id));
         }
         catch (Exception)
         {

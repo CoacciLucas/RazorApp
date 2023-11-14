@@ -1,5 +1,5 @@
 using Application.Commands.Commands;
-using Domain.Entities;
+using Application.Reads.DTOs;
 using Domain.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -36,9 +36,7 @@ public class CreateModel : PageModel
 
 
     [BindProperty]
-    public Premium Premium { get; set; } = default!;
-
-
+    public PremiumDTO Premium { get; set; } = default!;
     // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
     public async Task<IActionResult> OnPostAsync()
     {
@@ -47,7 +45,7 @@ public class CreateModel : PageModel
 
         try
         {
-            var result = await _handle.Send(new CreatePremiumCommand(Premium.Title, Premium.StartDate, Premium.EndDate, Premium.StudentId));
+            var result = await _handle.Send(new CreatePremiumCommand(Premium.Title, Premium.StartDate, Premium.EndDate, Premium.Student.Id));
         }
         catch (Exception)
         {
