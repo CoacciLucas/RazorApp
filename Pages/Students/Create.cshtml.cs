@@ -1,5 +1,4 @@
 using Application.Reads.DTOs;
-using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,7 +38,7 @@ public class CreateModel : PageModel
             TempData["error"] = "Error while creating student";
             return RedirectToPage("./Index");
         }
-           
+
         TempData["success"] = "Student created successfully";
         return RedirectToPage("./Index");
     }

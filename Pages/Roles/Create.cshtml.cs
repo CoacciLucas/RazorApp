@@ -5,7 +5,6 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace RazorApp.Pages.Roles;
 
@@ -19,16 +18,8 @@ public class CreateModel : PageModel
         _handle = handle;
         _studentRepository = studentRepository;
     }
-    public async Task<IActionResult> OnGet()
+    public IActionResult OnGet()
     {
-        var students = await _studentRepository.GetAllAsyncAsNoTracking();
-        var studentsWithEmail = students
-                                    .Select(s => new
-                                    {
-                                        Id = s.Id,
-                                        Text = $"{s.Name} ({s.Email})"
-                                    })
-                                    .ToList();
         return Page();
     }
 
@@ -43,15 +34,15 @@ public class CreateModel : PageModel
 
         try
         {
-          //  var result = await _handle.Send(new CreatePremiumCommand(Role.Title, Role.StartDate, Role.EndDate, Role.Student.Id));
+            var result = await _handle.Send(new CreateRoleCommand(Role.Name));
         }
         catch (Exception)
         {
-            TempData["error"] = "Error while creating student";
+            TempData["error"] = "Error while creating role";
             return RedirectToPage("./Index");
         }
 
-        TempData["success"] = "Student created successfully";
+        TempData["success"] = "Role created successfully";
         return RedirectToPage("./Index");
     }
 }

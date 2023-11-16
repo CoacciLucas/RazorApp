@@ -17,4 +17,15 @@ public class AspNetRoleRepository : Repository<IdentityRole>, IAspNetRoleReposit
             .AsNoTrackingWithIdentityResolution()
             .ToListAsync();
     }
+    public async Task<IdentityRole?> GetByIdAsyncAsNoTracking(string id)
+    {
+        return await _context.Roles
+            .AsNoTrackingWithIdentityResolution()
+            .FirstOrDefaultAsync(x => x.Id == id);
+    }
+    public async Task<IdentityRole?> GetByIdAsync(string id)
+    {
+        return await _context.Roles
+            .FirstOrDefaultAsync(x => x.Id == id);
+    }
 }

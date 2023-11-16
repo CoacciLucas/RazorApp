@@ -1,10 +1,8 @@
 ﻿using Application.Commands.Commands;
-using Domain.Repositories;
 using Domain.Services.Interfaces;
 using Infra.Data.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using RazorApp.Application.Commands;
 
 namespace Application.Commands.Handler;
 

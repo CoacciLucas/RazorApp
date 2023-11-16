@@ -14,13 +14,13 @@ public class DetailsModel : PageModel
         _handle = handle;
     }
 
-    public PremiumDTO Premium { get; set; } = default!;
+    public IdentityRoleDTO Role { get; set; } = default!;
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {
-        var result = await _handle.Send(new GetPremiumByIdQuery(id));
+        var result = await _handle.Send(new GetRoleByIdQuery(id));
 
-        Premium = result;
+        Role = result;
         return Page();
     }
 }

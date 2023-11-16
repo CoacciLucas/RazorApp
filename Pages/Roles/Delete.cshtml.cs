@@ -12,46 +12,47 @@ namespace RazorApp.Pages.Roles;
 [Authorize(Roles = "Admin")]
 public class DeleteModel : PageModel
 {
-    private readonly IPremiumService _premiumService;
+    private readonly IAspNetRoleService _roleService;
     private readonly IMapper _mapper;
     private readonly IMediator _handle;
-    public DeleteModel(IPremiumService premiumService, IMapper mapper, IMediator handle)
+    public DeleteModel(IAspNetRoleService roleService, IMapper mapper, IMediator handle)
     {
-        _premiumService = premiumService;
+        _roleService = roleService;
         _mapper = mapper;
         _handle = handle;
     }
 
     [BindProperty]
-    public PremiumDTO Premium { get; set; } = default!;
+    public IdentityRoleDTO Role { get; set; } = default!;
 
     public async Task<IActionResult> OnGetAsync(Guid id)
     {
-        var premium = await _premiumService.GetByIdAsyncAsNoTracking(id);
-        if (premium == null)
-            TempData["error"] = "Premium not found!";
-        Premium = _mapper.Map<PremiumDTO>(premium);
+        var role = await _roleService.GetByIdAsyncAsNoTracking(id.ToString());
+        if (role == null)
+            TempData["error"] = "Role not found!";
+
+        Role = _mapper.Map<IdentityRoleDTO>(role);
         return Page();
     }
 
     public async Task<IActionResult> OnPostAsync(Guid id)
     {
-        var result = await _handle.Send(new DeletePremiumCommand(id));
+        var result = await _handle.Send(new DeleteRoleCommand(id));
 
         if (!result.Success)
-            TempData["error"] = "Error while editing premium";
+            TempData["error"] = "Error while editing Role";
 
-        if (!PremiumExists(id))
+        if (!RoleExists(id))
         {
-            TempData["error"] = "Premium not found";
+            TempData["error"] = "Role not found";
             return RedirectToPage("./Index");
         }
 
-        TempData["success"] = "Premium deleted successfully";
+        TempData["success"] = "Role deleted successfully";
         return RedirectToPage("./Index");
     }
-    private bool PremiumExists(Guid id)
+    private bool RoleExists(Guid id)
     {
-        return (_premiumService.GetByIdAsyncAsNoTracking(id) != null);
+        return (_roleService.GetByIdAsyncAsNoTracking(id.ToString()) != null);
     }
 }

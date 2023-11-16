@@ -17,4 +17,14 @@ public class AspNetRoleService : IAspNetRoleService
     {
         return await _aspNetRoleRepository.GetAllAsyncAsNoTracking();
     }
+
+    public async Task<IdentityRole?> GetByIdAsyncAsNoTracking(string id)
+    {
+        return await _aspNetRoleRepository.GetByIdAsyncAsNoTracking(id);
+    }
+
+    public async Task<IdentityRole?> GetByIdAsync(string id)
+    {
+        return await _aspNetRoleRepository.GetByIdAsync(id);
+    }
 }
