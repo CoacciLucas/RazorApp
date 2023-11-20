@@ -4,9 +4,9 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace RazorApp.Pages.Students;
+namespace RazorApp.Pages.Users;
 
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class IndexModel : PageModel
 {
     private readonly IMediator _handle;
@@ -16,12 +16,12 @@ public class IndexModel : PageModel
         _handle = handle;
     }
 
-    public IList<StudentDTO> Student { get; set; } = default!;
+    public IList<IdentityUserDTO> IdtUser { get; set; } = default!;
 
     public async Task OnGetAsync()
     {
-        var result = await _handle.Send(new GetAllStudentsQuery());
+        var result = await _handle.Send(new GetAllUsersQuery());
 
-        Student = result;
+        IdtUser = result;
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace RazorApp.Pages.Premiums;
 
+[Authorize]
 public class IndexModel : PageModel
 {
     private readonly IMediator _handle;
